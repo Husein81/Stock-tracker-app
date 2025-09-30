@@ -1,5 +1,28 @@
 import { Avatar, AvatarImage, AvatarFallback } from "./avatar";
 import {
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+  CommandSeparator,
+} from "./command";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "./dialog";
+import {
   DropdownMenu,
   DropdownMenuPortal,
   DropdownMenuTrigger,
@@ -16,13 +39,55 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from "./dropdown-menu";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+} from "./popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
+
+// exports
+export { default as Icon } from "./icon";
 
 export { Button } from "./button";
+export { Input } from "./input";
+export { Label } from "./label";
 
 export const Shad = {
   Avatar,
   AvatarImage,
   AvatarFallback,
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+  CommandSeparator,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
   DropdownMenu,
   DropdownMenuPortal,
   DropdownMenuTrigger,
@@ -38,4 +103,18 @@ export const Shad = {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
 };

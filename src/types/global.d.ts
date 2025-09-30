@@ -1,3 +1,5 @@
+import { AnyFieldApi } from "@tanstack/react-form";
+
 declare global {
   type SignInFormData = {
     email: string;
@@ -17,8 +19,7 @@ declare global {
   type CountrySelectProps = {
     name: string;
     label: string;
-    control: Control;
-    error?: FieldError;
+    field?: AnyFieldApi;
     required?: boolean;
   };
 
@@ -27,9 +28,7 @@ declare global {
     label: string;
     placeholder: string;
     type?: string;
-    register: UseFormRegister;
-    error?: FieldError;
-    validation?: RegisterOptions;
+    field?: AnyFieldApi;
     disabled?: boolean;
     value?: string;
   };
@@ -44,8 +43,7 @@ declare global {
     label: string;
     placeholder: string;
     options: readonly Option[];
-    control: Control;
-    error?: FieldError;
+    field?: AnyFieldApi;
     required?: boolean;
   };
 
