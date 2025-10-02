@@ -1,9 +1,9 @@
 "use client";
-import { Button, FooterLink, InputField } from "@/components";
+import { Button, FooterLink, InputField, PulseLoader } from "@/components";
 import { useSignIn } from "@/hooks/auth";
 import { useForm } from "@tanstack/react-form";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const SignInForm = () => {
@@ -127,7 +127,7 @@ const SignInForm = () => {
               className="yellow-btn w-full mt-5"
               disabled={isSubmitting || !canSubmit}
             >
-              {isSubmitting ? "Signing In" : "Sign In"}
+              {isSubmitting ? <PulseLoader /> : "Sign In"}
             </Button>
           )}
         </form.Subscribe>
@@ -143,15 +143,9 @@ const SignInForm = () => {
 
 const Page = () => {
   return (
-    <Suspense
-      fallback={
-        <div className="space-y-8 max-w-xl mx-auto">
-          <h1 className="form-title">Loading...</h1>
-        </div>
-      }
-    >
+    <>
       <SignInForm />
-    </Suspense>
+    </>
   );
 };
 

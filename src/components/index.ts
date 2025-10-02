@@ -7,3 +7,4 @@ export { default as FooterLink } from "./footer-link";
 export { default as SearchCommand } from "./search-command";
 export { default as WatchlistButton } from "./watchlist-button";
 export { default as TradingViewWidget } from "./tradingview-widget";
+export { default as PulseLoader } from "./pulse-loader";

@@ -4,6 +4,7 @@ import {
   CountryField,
   FooterLink,
   InputField,
+  PulseLoader,
   SelectField,
 } from "@/components";
 import { useSignUp } from "@/hooks/auth";
@@ -238,9 +239,7 @@ const Page = () => {
               disabled={!canSubmit || isSubmitting}
               className="w-full yellow-btn mt-4"
             >
-              {isSubmitting
-                ? "Creating Account"
-                : "Start Your Investing Journey"}
+              {isSubmitting ? <PulseLoader /> : "Start Your Investing Journey"}
             </Button>
           )}
         </form.Subscribe>
