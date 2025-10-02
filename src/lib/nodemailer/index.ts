@@ -43,9 +43,10 @@ export const sendVerificationEmail = async ({
   name: string;
   verificationUrl: string;
 }): Promise<void> => {
-  const htmlTemplate = EMAIL_VERIFICATION_TEMPLATE
-    .replace(/{{name}}/g, name)
-    .replace(/{{verificationUrl}}/g, verificationUrl);
+  const htmlTemplate = EMAIL_VERIFICATION_TEMPLATE.replace(
+    /{{name}}/g,
+    name
+  ).replace(/{{verificationUrl}}/g, verificationUrl);
 
   const mailOptions = {
     from: `"Signalist" <signalist@jsmastery.pro>`,

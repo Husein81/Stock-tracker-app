@@ -38,9 +38,12 @@ const Page = () => {
         await signUpMutation.mutateAsync(value);
         setRegisteredEmail(value.email);
         setShowVerificationMessage(true);
-        toast.success("Account created! Please check your email to verify your account.", {
-          duration: 6000,
-        });
+        toast.success(
+          "Account created! Please check your email to verify your account.",
+          {
+            duration: 6000,
+          }
+        );
       } catch (error: any) {
         toast.error(error?.message || "Failed to create account");
       }
@@ -101,8 +104,8 @@ const Page = () => {
             {registeredEmail}
           </p>
           <p className="text-gray-400 text-sm mb-8">
-            Please check your inbox and click the verification link to activate your account.
-            The link will expire in 24 hours.
+            Please check your inbox and click the verification link to activate
+            your account. The link will expire in 24 hours.
           </p>
 
           <div className="space-y-4">
@@ -112,7 +115,7 @@ const Page = () => {
             >
               Go to Sign In
             </Button>
-            
+
             <div className="text-center">
               <p className="text-sm text-gray-400 mb-2">
                 Didn't receive the email?
