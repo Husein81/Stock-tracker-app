@@ -9,8 +9,12 @@ import {
   TECHNICAL_ANALYSIS_WIDGET_CONFIG,
 } from "@/lib/constants";
 
-export default function Page({ params }: { params: { symbol: string } }) {
-  const { symbol } = params;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ symbol: string }>;
+}) {
+  const { symbol } = await params;
   const scriptUrl = `https://s3.tradingview.com/external-embedding/embed-widget-`;
 
   return (

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import User from "@/database/models/user.model";
 
-export const GET = async (request: NextRequest) => {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const token = searchParams.get("token");
@@ -54,4 +54,4 @@ export const GET = async (request: NextRequest) => {
       new URL("/sign-in?verified=error", request.url)
     );
   }
-};
+}

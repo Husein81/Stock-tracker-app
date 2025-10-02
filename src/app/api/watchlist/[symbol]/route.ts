@@ -7,7 +7,7 @@ import { Watchlist } from "@/database/models/watchlis.model";
 // GET - Check if a specific stock is in the watchlist
 export async function GET(
   req: NextRequest,
-  { params }: { params: { symbol: string } }
+  { params }: { params: Promise<{ symbol: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,7 +19,7 @@ export async function GET(
       );
     }
 
-    const { symbol } = params;
+    const { symbol } = await params;
 
     if (!symbol) {
       return NextResponse.json(
@@ -52,7 +52,7 @@ export async function GET(
 // DELETE - Remove a specific stock from the watchlist
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { symbol: string } }
+  { params }: { params: Promise<{ symbol: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -64,7 +64,7 @@ export async function DELETE(
       );
     }
 
-    const { symbol } = params;
+    const { symbol } = await params;
 
     if (!symbol) {
       return NextResponse.json(

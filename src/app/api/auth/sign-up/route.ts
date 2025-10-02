@@ -9,7 +9,7 @@ import {
 } from "@/lib/generateToken";
 import { sendVerificationEmail } from "@/lib/nodemailer";
 
-export const POST = async (request: NextRequest, res: NextResponse) => {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const {
@@ -94,4 +94,4 @@ export const POST = async (request: NextRequest, res: NextResponse) => {
       { status: 500 }
     );
   }
-};
+}

@@ -3,10 +3,10 @@ import { Button, FooterLink, InputField } from "@/components";
 import { useSignIn } from "@/hooks/auth";
 import { useForm } from "@tanstack/react-form";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const Page = () => {
+const SignInForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const signInMutation = useSignIn();
@@ -140,4 +140,19 @@ const Page = () => {
     </div>
   );
 };
+
+const Page = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="space-y-8 max-w-xl mx-auto">
+          <h1 className="form-title">Loading...</h1>
+        </div>
+      }
+    >
+      <SignInForm />
+    </Suspense>
+  );
+};
+
 export default Page;
