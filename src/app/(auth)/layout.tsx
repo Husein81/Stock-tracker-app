@@ -1,7 +1,20 @@
+"use client";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      router.push("/");
+    }
+  }, [session, status, router]);
+
   return (
     <main className="auth-layout">
       <section className="auth-left-section scrollbar-hide-default">

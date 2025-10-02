@@ -2,8 +2,15 @@ import Link from "next/link";
 import Image from "next/image";
 import NavItems from "./nav-items";
 import UserDropdown from "./user-dropdown";
+import { User } from "next-auth";
+import { searchStocks } from "@/lib/finnhub";
+import { useQuery } from "@tanstack/react-query";
 
-const Header = () => {
+type Props = {
+  user: User;
+};
+
+const Header = ({ user }: Props) => {
   return (
     <header className="sticky top-0 header">
       <div className="container header-wrapper">
@@ -19,7 +26,7 @@ const Header = () => {
         <nav className="hidden sm:block">
           <NavItems />
         </nav>
-        <UserDropdown />
+        <UserDropdown user={user} />
       </div>
     </header>
   );

@@ -4,3 +4,6 @@ export { default as Header } from "./header";
 export { default as UserDropdown } from "./user-dropdown";
 export { default as NavItems } from "./nav-items";
 export { default as FooterLink } from "./footer-link";
+export { default as SearchCommand } from "./search-command";
+export { default as WatchlistButton } from "./watchlist-button";
+export { default as TradingViewWidget } from "./tradingview-widget";

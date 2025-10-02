@@ -62,6 +62,7 @@ import {
 export { default as Icon } from "./icon";
 
 export { Button } from "./button";
+export { Toaster } from "./sonner";
 export { Input } from "./input";
 export { Label } from "./label";
 
