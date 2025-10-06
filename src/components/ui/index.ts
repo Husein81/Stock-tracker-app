@@ -46,6 +46,16 @@ import {
   PopoverAnchor,
 } from "./popover";
 import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+} from "./table";
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -57,6 +67,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
+import { fr } from "zod/v4/locales";
 
 // exports
 export { default as Icon } from "./icon";
@@ -108,6 +119,14 @@ export const Shad = {
   PopoverTrigger,
   PopoverContent,
   PopoverAnchor,
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
   Select,
   SelectContent,
   SelectGroup,

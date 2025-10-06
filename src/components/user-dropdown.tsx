@@ -45,7 +45,10 @@ const UserDropdown = ({ user }: Props) => {
               {displayName}
             </span>
           </div>
-          <Icon name="ChevronsUpDown" className="size-4 text-gray-400" />
+          <Icon
+            name="ChevronsUpDown"
+            className="size-4 text-gray-400 hidden md:block"
+          />
         </Button>
       </Shad.DropdownMenuTrigger>
       <Shad.DropdownMenuContent className="text-gray-400 bg-gray-700">

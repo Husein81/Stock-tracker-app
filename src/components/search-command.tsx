@@ -77,7 +77,7 @@ const SearchCommand = ({
         <Shad.CommandDialog
           open={open}
           onOpenChange={setOpen}
-          className="rounded-lg absolute top-1/4 2xl:top-1/4  left-1/2 -translate-x-1/2 w-full"
+          className="rounded-lg absolute top-1/9 md:top-1/6 xl:top-1/4 left-1/2 -translate-x-1/2 w-full"
         >
           <div className="search-field">
             <Shad.CommandInput
