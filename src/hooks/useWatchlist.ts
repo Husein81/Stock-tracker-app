@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 // Types
 export interface WatchlistItem {
@@ -25,6 +26,21 @@ export interface WatchlistCheckResponse {
   success: boolean;
   isInWatchlist: boolean;
   data: WatchlistItem | null;
+}
+
+interface StockQuote {
+  c: number; // Current price
+  d: number; // Change
+  dp: number; // Percent change
+  h: number; // High price of the day
+  l: number; // Low price of the day
+  o: number; // Open price of the day
+  pc: number; // Previous close price
+}
+
+interface CompanyMetrics {
+  marketCapitalization?: number;
+  peBasicExclExtraTTM?: number; // P/E ratio
 }
 
 // Fetch all watchlist items
@@ -159,3 +175,65 @@ export const useToggleWatchlist = () => {
     error: addMutation.error || removeMutation.error,
   };
 };
+
+const apiKey = process.env.NEXT_PUBLIC_FINNHUB_API_KEY;
+
+export const useGetQuotes = (watchlistData: WatchlistItem[]) =>
+  useQuery({
+    queryKey: ["quotes", watchlistData],
+    enabled: !!watchlistData && watchlistData.length > 0,
+    queryFn: async () => {
+      try {
+        // Fetch quotes
+        const quotePromises = watchlistData.map(async (item) => {
+          try {
+            const response = await axios.get(
+              `https://finnhub.io/api/v1/quote?symbol=${item.symbol}&token=${apiKey}`
+            );
+            if (response.status !== 200)
+              throw new Error("Failed to fetch quote");
+            const data = response.data;
+            return { symbol: item.symbol, data };
+          } catch (err) {
+            console.error(`Error fetching quote for ${item.symbol}:`, err);
+            return { symbol: item.symbol, data: null };
+          }
+        });
+
+        // Fetch company metrics (market cap and P/E ratio)
+        const metricsPromises = watchlistData.map(async (item) => {
+          try {
+            const response = await fetch(
+              `https://finnhub.io/api/v1/stock/metric?symbol=${item.symbol}&metric=all&token=${apiKey}`
+            );
+            if (!response.ok) throw new Error("Failed to fetch metrics");
+            const data = await response.json();
+            return { symbol: item.symbol, data: data.metric };
+          } catch (err) {
+            console.error(`Error fetching metrics for ${item.symbol}:`, err);
+            return { symbol: item.symbol, data: null };
+          }
+        });
+
+        const [quoteResults, metricsResults] = await Promise.all([
+          Promise.all(quotePromises),
+          Promise.all(metricsPromises),
+        ]);
+
+        const quotesMap: Record<string, StockQuote> = {};
+        quoteResults.forEach(({ symbol, data }) => {
+          if (data) quotesMap[symbol] = data;
+        });
+
+        const metricsMap: Record<string, CompanyMetrics> = {};
+        metricsResults.forEach(({ symbol, data }) => {
+          if (data) metricsMap[symbol] = data;
+        });
+
+        return { quotesMap, metricsMap };
+      } catch (err) {
+        console.error("Error fetching quotes:", err);
+        return { quotesMap: {}, metricsMap: {} };
+      }
+    },
+  });

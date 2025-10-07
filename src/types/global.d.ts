@@ -42,7 +42,7 @@ declare global {
     name: string;
     label: string;
     placeholder: string;
-    options: readonly Option[];
+    options: Option[];
     field?: AnyFieldApi;
     required?: boolean;
   };
@@ -195,17 +195,6 @@ declare global {
     image?: string;
     category?: string;
     related?: string;
-  };
-
-  type Alert = {
-    id: string;
-    symbol: string;
-    company: string;
-    alertName: string;
-    currentPrice: number;
-    alertType: "upper" | "lower";
-    threshold: number;
-    changePercent?: number;
   };
 }
 

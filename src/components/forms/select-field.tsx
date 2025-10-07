@@ -8,7 +8,6 @@ const SelectField = ({
   placeholder,
   options,
   field,
-  required = false,
 }: SelectFieldProps) => {
   return (
     <div className="space-y-2">
@@ -22,7 +21,7 @@ const SelectField = ({
         <Shad.SelectTrigger className="select-trigger">
           <Shad.SelectValue placeholder={placeholder} />
         </Shad.SelectTrigger>
-        <Shad.SelectContent>
+        <Shad.SelectContent className="bg-gray-700">
           {options.map((option) => (
             <Shad.SelectItem
               key={option.value}
@@ -33,8 +32,8 @@ const SelectField = ({
             </Shad.SelectItem>
           ))}
         </Shad.SelectContent>
-        {field && <FieldInfo field={field} />}
       </Shad.Select>
+      {field && <FieldInfo field={field} />}
     </div>
   );
 };

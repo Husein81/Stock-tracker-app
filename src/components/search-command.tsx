@@ -5,6 +5,12 @@ import Link from "next/link";
 import _ from "lodash";
 import { searchStocks } from "@/lib/finnhub";
 import { useStockStore } from "@/store/useStock";
+import {
+  useAddToWatchlist,
+  useRemoveFromWatchlist,
+  useWatchlist,
+} from "@/hooks/useWatchlist";
+import { toast } from "sonner";
 
 const SearchCommand = ({
   renderAs = "button",
@@ -13,8 +19,24 @@ const SearchCommand = ({
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { stocks, setStocks, fetchStocks } = useStockStore();
+  const { data: watchlistData } = useWatchlist();
+  const addToWatchlist = useAddToWatchlist();
+  const removeFromWatchlist = useRemoveFromWatchlist();
+
   const isSearchMode = !!searchTerm.trim();
-  const displayStocks = isSearchMode ? stocks : stocks.slice(0, 10);
+
+  // Merge watchlist status with stocks
+  const watchlistSymbols = useMemo(() => {
+    return new Set(watchlistData?.data?.map((item) => item.symbol) || []);
+  }, [watchlistData]);
+
+  const displayStocks = useMemo(() => {
+    const baseStocks = isSearchMode ? stocks : stocks.slice(0, 10);
+    return baseStocks.map((stock) => ({
+      ...stock,
+      isInWatchlist: watchlistSymbols.has(stock.symbol),
+    }));
+  }, [stocks, isSearchMode, watchlistSymbols]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -56,6 +78,33 @@ const SearchCommand = ({
     fetchStocks();
   }, [fetchStocks]);
 
+  const handleToggleWatchlist = async (
+    e: React.MouseEvent,
+    stock: StockWithWatchlistStatus
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      if (stock.isInWatchlist) {
+        await removeFromWatchlist.mutateAsync(stock.symbol);
+        toast.success(`${stock.symbol} removed from watchlist`);
+      } else {
+        await addToWatchlist.mutateAsync({
+          symbol: stock.symbol,
+          company: stock.name,
+        });
+        toast.success(`${stock.symbol} added to watchlist`);
+      }
+    } catch (err) {
+      toast.error(
+        stock.isInWatchlist
+          ? "Failed to remove from watchlist"
+          : "Failed to add to watchlist"
+      );
+    }
+  };
+
   return (
     <Shad.Popover>
       <Shad.PopoverTrigger asChild>
@@ -77,7 +126,7 @@ const SearchCommand = ({
         <Shad.CommandDialog
           open={open}
           onOpenChange={setOpen}
-          className="rounded-lg absolute top-1/9 md:top-1/6 xl:top-1/4 left-1/2 -translate-x-1/2 w-full"
+          className="rounded-lg absolute top-1/9 md:top-1/6 xl:top-1/4 left-1/2 -translate-y-1/2 -translate-x-1/2 w-full"
         >
           <div className="search-field">
             <Shad.CommandInput
@@ -115,16 +164,33 @@ const SearchCommand = ({
                             {stock.symbol} | {stock.exchange} | {stock.type}
                           </div>
                         </div>
-                        <div className="rounded-full bg-gray-700/85 p-2">
+                        <button
+                          onClick={(e) => handleToggleWatchlist(e, stock)}
+                          disabled={
+                            addToWatchlist.isPending ||
+                            removeFromWatchlist.isPending
+                          }
+                          className="rounded-full bg-gray-700/85 p-2 hover:bg-gray-600/85 transition-colors disabled:opacity-50"
+                          title={
+                            stock.isInWatchlist
+                              ? `Remove ${stock.symbol} from watchlist`
+                              : `Add ${stock.symbol} to watchlist`
+                          }
+                          aria-label={
+                            stock.isInWatchlist
+                              ? `Remove ${stock.symbol} from watchlist`
+                              : `Add ${stock.symbol} to watchlist`
+                          }
+                        >
                           <Icon
                             name={"Star"}
-                            className={`size-6 ${
+                            className={`size-6 transition-colors ${
                               stock.isInWatchlist
-                                ? "text-yellow-500 fill-yellow-500 "
+                                ? "text-yellow-500 fill-yellow-500"
                                 : "text-gray-400"
                             }`}
                           />
-                        </div>
+                        </button>
                       </Link>
                     </li>
                   ))}

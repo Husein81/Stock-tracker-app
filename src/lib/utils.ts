@@ -1,3 +1,4 @@
+import { Alert } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -125,7 +126,7 @@ export const formatDateToday = new Date().toLocaleDateString("en-US", {
 });
 
 export const getAlertText = (alert: Alert) => {
-  const condition = alert.alertType === "upper" ? ">" : "<";
+  const condition = alert.type === "price" ? ">" : "<";
   return `Price ${condition} ${formatPrice(alert.threshold)}`;
 };
 

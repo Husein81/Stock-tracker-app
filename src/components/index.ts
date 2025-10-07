@@ -9,3 +9,4 @@ export { default as WatchlistButton } from "./watchlist-button";
 export { default as TradingViewWidget } from "./tradingview-widget";
 export { default as PulseLoader } from "./pulse-loader";
 export { default as WatchlistTable } from "./watchlist-table";
+export { default as AlertList } from "./alert-list";
