@@ -1,3 +1,4 @@
+import { watchlistApi } from "@/lib/hooks/watchlistApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -77,28 +78,7 @@ export const useAddToWatchlist = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({
-      symbol,
-      company,
-    }: {
-      symbol: string;
-      company: string;
-    }) => {
-      const response = await fetch("/api/watchlist", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ symbol, company }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to add to watchlist");
-      }
-
-      return response.json();
-    },
+    mutationFn: watchlistApi.addWatchlist,
     onSuccess: (data, variables) => {
       // Invalidate and refetch watchlist queries
       queryClient.invalidateQueries({ queryKey: ["watchlist"] });
@@ -114,18 +94,7 @@ export const useRemoveFromWatchlist = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (symbol: string) => {
-      const response = await fetch(`/api/watchlist/${symbol}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to remove from watchlist");
-      }
-
-      return response.json();
-    },
+    mutationFn: watchlistApi.removeFromWatchlist,
     onSuccess: (data, symbol) => {
       // Invalidate and refetch watchlist queries
       queryClient.invalidateQueries({ queryKey: ["watchlist"] });

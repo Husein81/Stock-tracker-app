@@ -1,13 +1,13 @@
 "use client";
-import { Button, Icon, Shad } from "./ui";
 import {
-  useWatchlist,
-  useRemoveFromWatchlist,
   useGetQuotes,
+  useRemoveFromWatchlist,
+  useWatchlist,
 } from "@/hooks/useWatchlist";
 import Link from "next/link";
 import { toast } from "sonner";
 import AlertCommand from "./alert-command";
+import { Icon, Shad, Spinner } from "./ui";
 
 const WatchlistTable = () => {
   const { data: watchlistData, isLoading, error } = useWatchlist();
@@ -51,7 +51,7 @@ const WatchlistTable = () => {
 
   const formatChange = (change: number) => {
     const sign = change >= 0 ? "+" : "";
-    return `${sign}${formatPrice(change).replace("$", "")}`;
+    return `${sign}${formatPrice(change).replace("$", "")}%`;
   };
 
   const formatMarketCap = (cap: number) => {
@@ -77,7 +77,7 @@ const WatchlistTable = () => {
           <h2 className="text-lg font-medium">My Watchlist</h2>
         </div>
         <div className="flex items-center justify-center h-40">
-          <p className="text-gray-400">Loading watchlist...</p>
+          <Spinner className="size-8 text-gray-500" />
         </div>
       </div>
     );
@@ -167,7 +167,9 @@ const WatchlistTable = () => {
                     </Shad.TableCell>
                     <Shad.TableCell className="text-center">
                       {loadingQuotes || !quote ? (
-                        <span className="text-gray-500">Loading...</span>
+                        <span className="text-gray-500">
+                          <Spinner className="size-4 text-gray-500" />
+                        </span>
                       ) : (
                         <span className="font-mono">
                           {formatPrice(quote.c)}

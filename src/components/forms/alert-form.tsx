@@ -5,7 +5,7 @@ import SelectField from "./select-field";
 import { Button, Label } from "../ui";
 import PulseLoader from "../pulse-loader";
 import { useStockStore } from "@/store/useStock";
-import { useCreateAlerts } from "@/hooks/alerts";
+import { useCreateAlerts, useUpdateAlert } from "@/hooks/alerts";
 
 enum AlertType {
   PRICE = "price",
@@ -26,20 +26,24 @@ const AlertForm = ({ alert, watchlist }: Props) => {
   const { stocks, setStocks, fetchStocks } = useStockStore();
 
   const createAlerts = useCreateAlerts();
+  const updateAlerts = useUpdateAlert();
   const stockIdentifier = watchlist?.company + " (" + watchlist?.symbol + ")";
+
   const form = useForm({
     defaultValues: {
       name: alert?.name || "",
-      stockIdentifier: stockIdentifier || "",
+      stockIdentifier:
+        alert?.stockIdentifier.split(" (")[1].split(")")[0] || "",
       type: alert?.type || "price",
       condition: alert?.condition || "greater_than",
       threshold: alert?.threshold || 0,
       frequency: alert?.frequency || "once_per_minute",
     },
     onSubmit: async ({ value }) => {
-      console.log("Form Values:", value);
       try {
-        await createAlerts.mutateAsync(value);
+        if (alert)
+          await updateAlerts.mutateAsync({ id: alert._id!, data: value });
+        else await createAlerts.mutateAsync(value);
       } catch (error) {
         console.error("Failed to create alert:", error);
       }
@@ -154,7 +158,13 @@ const AlertForm = ({ alert, watchlist }: Props) => {
               className="yellow-btn w-full mt-5"
               disabled={isSubmitting || !canSubmit}
             >
-              {isSubmitting ? <PulseLoader /> : "Create Alert"}
+              {isSubmitting ? (
+                <PulseLoader />
+              ) : alert ? (
+                "Update Alert"
+              ) : (
+                "Create Alert"
+              )}
             </Button>
           )}
         </form.Subscribe>

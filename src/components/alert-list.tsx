@@ -1,15 +1,21 @@
 "use client";
-import { useDeleteAlert, useGetAlerts, useUpdateAlert } from "@/hooks/alerts";
-import { useState } from "react";
+import { useDeleteAlert, useGetAlerts } from "@/hooks/alerts";
 import { toast } from "sonner";
 import AlertCommand from "./alert-command";
-import { Icon } from "./ui";
+import { Icon, Spinner } from "./ui";
+import { useEffect, useState } from "react";
+
+interface StockQuote {
+  c: number; // Current price
+  d: number; // Change
+  dp: number; // Percent change
+}
 
 const AlertList = () => {
   const { data: alerts, isLoading } = useGetAlerts();
   const deleteAlert = useDeleteAlert();
-  const updateAlert = useUpdateAlert();
-  const [editingAlertId, setEditingAlertId] = useState<string | null>(null);
+  const [quotes, setQuotes] = useState<Record<string, StockQuote>>({});
+  const [loadingQuotes, setLoadingQuotes] = useState(false);
 
   const handleDelete = async (alertId: string) => {
     try {
@@ -45,6 +51,48 @@ const AlertList = () => {
     return frequencyMap[frequency] || frequency;
   };
 
+  useEffect(() => {
+    const fetchQuotes = async () => {
+      if (!alerts || alerts.length === 0) return;
+
+      setLoadingQuotes(true);
+      const apiKey = process.env.NEXT_PUBLIC_FINNHUB_API_KEY;
+
+      try {
+        const quotePromises = alerts.map(async (alert) => {
+          const symbol = parseStockSymbol(alert.stockIdentifier);
+          try {
+            const response = await fetch(
+              `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`
+            );
+            if (!response.ok) throw new Error("Failed to fetch quote");
+            const data = await response.json();
+            return { symbol, data };
+          } catch (err) {
+            console.error(`Error fetching quote for ${symbol}:`, err);
+            return { symbol, data: null };
+          }
+        });
+
+        const results = await Promise.all(quotePromises);
+        const quotesMap: Record<string, StockQuote> = {};
+        results.forEach(({ symbol, data }) => {
+          if (data) quotesMap[symbol] = data;
+        });
+        setQuotes(quotesMap);
+      } catch (err) {
+        console.error("Error fetching quotes:", err);
+      } finally {
+        setLoadingQuotes(false);
+      }
+    };
+
+    fetchQuotes();
+    // Refresh quotes every 30 seconds
+    const interval = setInterval(fetchQuotes, 30000);
+    return () => clearInterval(interval);
+  }, [alerts]);
+
   if (isLoading) {
     return (
       <div className="flex flex-col gap-4">
@@ -53,13 +101,11 @@ const AlertList = () => {
           <AlertCommand />
         </div>
         <div className="flex items-center justify-center h-40">
-          <p className="text-gray-400">Loading alerts...</p>
+          <Spinner className="size-8 text-gray-500" />
         </div>
       </div>
     );
   }
-
-  console.log("Alerts data:", alerts);
 
   return (
     <div className="flex flex-col gap-4 px-4 md:px-6">
@@ -82,7 +128,10 @@ const AlertList = () => {
           {alerts.map((alert) => {
             const symbol = parseStockSymbol(alert.stockIdentifier);
             const companyName = parseCompanyName(alert.stockIdentifier);
-            const isPositive = alert.condition === "greater_than";
+            const quote = quotes[symbol];
+            const isPositive = quote ? quote.dp >= 0 : false;
+            const currentPrice = quote?.c;
+            const percentChange = quote?.dp;
 
             return (
               <div
@@ -101,20 +150,27 @@ const AlertList = () => {
                     <div className="flex-1">
                       <h3 className="font-semibold text-base">{companyName}</h3>
                       <p className="text-sm text-gray-400">
-                        ${alert.threshold.toFixed(2)}
+                        {loadingQuotes || !currentPrice
+                          ? "Loading..."
+                          : `$${currentPrice.toFixed(2)}`}
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-mono text-gray-300">
                         {symbol}
                       </p>
-                      <p
-                        className={`text-sm font-semibold ${
-                          isPositive ? "text-green-500" : "text-red-500"
-                        }`}
-                      >
-                        {isPositive ? "+1.4%" : "-2.53%"}
-                      </p>
+                      {loadingQuotes || !percentChange ? (
+                        <p className="text-sm text-gray-500">-</p>
+                      ) : (
+                        <p
+                          className={`text-sm font-semibold ${
+                            isPositive ? "text-green-500" : "text-red-500"
+                          }`}
+                        >
+                          {isPositive ? "+" : ""}
+                          {percentChange.toFixed(2)}%
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -124,14 +180,7 @@ const AlertList = () => {
                   <div className="flex justify-between">
                     <span className="text-gray-400 text-sm">Alert:</span>
                     <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => setEditingAlertId(alert._id!)}
-                        className="p-1.5 hover:bg-gray-700 rounded transition-colors"
-                        title="Edit alert"
-                        aria-label="Edit alert"
-                      >
-                        <Icon name="Pencil" className="size-4 text-gray-400" />
-                      </button>
+                      <AlertCommand alert={alert} />
                       <button
                         onClick={() => handleDelete(alert._id!)}
                         disabled={deleteAlert.isPending}

@@ -11,7 +11,6 @@ const InputField = ({
   type = "text",
   field,
   disabled,
-  value,
 }: FormInputProps) => {
   const [show, setShow] = React.useState(false);
   const isPass = type === "password";
@@ -26,7 +25,7 @@ const InputField = ({
           id={name}
           placeholder={placeholder}
           disabled={disabled}
-          value={value}
+          value={field?.state.value}
           onChange={(e) => field?.handleChange(e.target.value)}
           className={cn("form-input", {
             "opacity-50 cursor-not-allowed": disabled,

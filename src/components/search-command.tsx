@@ -106,101 +106,98 @@ const SearchCommand = ({
   };
 
   return (
-    <Shad.Popover>
-      <Shad.PopoverTrigger asChild>
-        {renderAs === "text" ? (
-          <span onClick={() => setOpen(true)} className="search-text">
-            {label}
-          </span>
-        ) : (
-          <Button
-            variant="ghost"
-            onClick={() => setOpen(true)}
-            className="search-btn"
-          >
-            {label}
-          </Button>
-        )}
-      </Shad.PopoverTrigger>
-      <Shad.PopoverContent className="w-full max-w-md p-0 relative">
-        <Shad.CommandDialog
-          open={open}
-          onOpenChange={setOpen}
-          className="rounded-lg absolute top-1/9 md:top-1/6 xl:top-1/4 left-1/2 -translate-y-1/2 -translate-x-1/2 w-full"
+    <div>
+      {renderAs === "text" ? (
+        <span onClick={() => setOpen(true)} className="search-text">
+          {label}
+        </span>
+      ) : (
+        <Button
+          variant="ghost"
+          onClick={() => setOpen(true)}
+          className="search-btn"
         >
-          <div className="search-field">
-            <Shad.CommandInput
-              value={searchTerm}
-              onValueChange={setSearchTerm}
-              placeholder="Type a stock name or ticker..."
-            />
-          </div>
-          <Shad.CommandList className="search-list scrollbar-hide-default">
-            {displayStocks.length === 0 ? (
-              <Shad.CommandEmpty className="search-list-empty">
-                No results found.
-              </Shad.CommandEmpty>
-            ) : (
-              <div>
-                <div className="search-count">
-                  {isSearchMode ? "Search results" : "Popular stocks"}
-                  {` `}({displayStocks?.length || 0})
-                </div>
-                <ul>
-                  {displayStocks.map((stock) => (
-                    <li
-                      key={stock.symbol}
-                      onClick={handleSelectStock}
-                      className="search-item"
-                    >
-                      <Link
-                        href={`/stocks/${stock.symbol}`}
-                        className="search-item-link"
-                      >
-                        <Icon name="TrendingUp" className="icon" />
-                        <div className="flex-1">
-                          <div className="search-item-name">{stock.name}</div>
-                          <div className="text-sm text-gray-500">
-                            {stock.symbol} | {stock.exchange} | {stock.type}
-                          </div>
-                        </div>
-                        <button
-                          onClick={(e) => handleToggleWatchlist(e, stock)}
-                          disabled={
-                            addToWatchlist.isPending ||
-                            removeFromWatchlist.isPending
-                          }
-                          className="rounded-full bg-gray-700/85 p-2 hover:bg-gray-600/85 transition-colors disabled:opacity-50"
-                          title={
-                            stock.isInWatchlist
-                              ? `Remove ${stock.symbol} from watchlist`
-                              : `Add ${stock.symbol} to watchlist`
-                          }
-                          aria-label={
-                            stock.isInWatchlist
-                              ? `Remove ${stock.symbol} from watchlist`
-                              : `Add ${stock.symbol} to watchlist`
-                          }
-                        >
-                          <Icon
-                            name={"Star"}
-                            className={`size-6 transition-colors ${
-                              stock.isInWatchlist
-                                ? "text-yellow-500 fill-yellow-500"
-                                : "text-gray-400"
-                            }`}
-                          />
-                        </button>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+          {label}
+        </Button>
+      )}
+
+      <Shad.CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        className="md:min-w-[750px]"
+      >
+        <div className="search-field">
+          <Shad.CommandInput
+            value={searchTerm}
+            onValueChange={setSearchTerm}
+            placeholder="Type a stock name or ticker..."
+          />
+        </div>
+        <Shad.CommandList className="search-list scrollbar-hide-default">
+          {displayStocks.length === 0 ? (
+            <Shad.CommandEmpty className="search-list-empty">
+              No results found.
+            </Shad.CommandEmpty>
+          ) : (
+            <div>
+              <div className="search-count">
+                {isSearchMode ? "Search results" : "Popular stocks"}
+                {` `}({displayStocks?.length || 0})
               </div>
-            )}
-          </Shad.CommandList>
-        </Shad.CommandDialog>
-      </Shad.PopoverContent>
-    </Shad.Popover>
+              <ul>
+                {displayStocks.map((stock) => (
+                  <li
+                    key={stock.symbol}
+                    onClick={handleSelectStock}
+                    className="search-item"
+                  >
+                    <Link
+                      href={`/stocks/${stock.symbol}`}
+                      className="search-item-link"
+                    >
+                      <Icon name="TrendingUp" className="icon" />
+                      <div className="flex-1">
+                        <div className="search-item-name">{stock.name}</div>
+                        <div className="text-sm text-gray-500">
+                          {stock.symbol} | {stock.exchange} | {stock.type}
+                        </div>
+                      </div>
+                      <button
+                        onClick={(e) => handleToggleWatchlist(e, stock)}
+                        disabled={
+                          addToWatchlist.isPending ||
+                          removeFromWatchlist.isPending
+                        }
+                        className="rounded-full bg-gray-700/85 p-2 hover:bg-gray-600/85 transition-colors disabled:opacity-50"
+                        title={
+                          stock.isInWatchlist
+                            ? `Remove ${stock.symbol} from watchlist`
+                            : `Add ${stock.symbol} to watchlist`
+                        }
+                        aria-label={
+                          stock.isInWatchlist
+                            ? `Remove ${stock.symbol} from watchlist`
+                            : `Add ${stock.symbol} to watchlist`
+                        }
+                      >
+                        <Icon
+                          name={"Star"}
+                          className={`size-6 transition-colors ${
+                            stock.isInWatchlist
+                              ? "text-yellow-500 fill-yellow-500"
+                              : "text-gray-400"
+                          }`}
+                        />
+                      </button>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </Shad.CommandList>
+      </Shad.CommandDialog>
+    </div>
   );
 };
 export default SearchCommand;

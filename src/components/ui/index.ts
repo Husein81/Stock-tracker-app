@@ -76,6 +76,7 @@ export { Button } from "./button";
 export { Toaster } from "./sonner";
 export { Input } from "./input";
 export { Label } from "./label";
+export { Spinner } from "./spinner";
 
 export const Shad = {
   Avatar,

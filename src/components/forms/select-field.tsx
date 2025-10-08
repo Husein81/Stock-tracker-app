@@ -19,7 +19,10 @@ const SelectField = ({
         onValueChange={field?.handleChange}
       >
         <Shad.SelectTrigger className="select-trigger">
-          <Shad.SelectValue placeholder={placeholder} />
+          <Shad.SelectValue
+            placeholder={placeholder}
+            className="placeholder:text-gray-600"
+          />
         </Shad.SelectTrigger>
         <Shad.SelectContent className="bg-gray-700">
           {options.map((option) => (

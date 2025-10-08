@@ -42,7 +42,10 @@ export const GET = async (
   }
 };
 
-export const PUT = async (req: Request) => {
+export const PUT = async (
+  req: Request,
+  { params }: { params: Promise<{ symbol: string }> }
+) => {
   try {
     const session = await getServerSession(authOptions);
 
@@ -54,10 +57,17 @@ export const PUT = async (req: Request) => {
     }
 
     await connectToDatabase();
+    const { symbol } = await params;
     const { name, type, condition, threshold, frequency } = await req.json();
-
+    console.log("Updating alert with ID:", symbol, {
+      name,
+      type,
+      condition,
+      threshold,
+      frequency,
+    });
     const updatedAlert = await Alert.findOneAndUpdate(
-      { userId: session.user.id, name },
+      { _id: symbol, userId: session.user.id, name },
       { type, condition, threshold, frequency },
       { new: true }
     );
@@ -65,6 +75,8 @@ export const PUT = async (req: Request) => {
     if (!updatedAlert) {
       return NextResponse.json({ error: "Alert not found" }, { status: 404 });
     }
+
+    return NextResponse.json(updatedAlert);
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error" },
